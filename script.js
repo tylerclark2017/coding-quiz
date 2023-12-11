@@ -2,7 +2,8 @@
 var currentQuestionIndex = 0;
 var time = questions.length * 15;
 var timerId;
-
+var score = 0;
+var currentQuestionIndex = 0;
 
 var startButton = document.getElementById("start");
 var questionContainerEl = document.getElementById("question-container");
@@ -11,6 +12,45 @@ var choicesEl = document.getElementById("choices");
 var feedbackEl = document.getElementById("feedback");
 var timerEl = document.getElementById("timer");
 var secondsLeft = 120;
+var quizQuestions = [
+    {
+      question: "In JavaScript, commonly used data types include all but the following:",
+      answers: ["A) strings", "B) booleans", "C) alerts", "D) numbers"],
+      correctAnswer: "C) alerts"
+    },
+   { question: "The condition in an if/else statement is enclosed with which of the following?",
+   answers: ["A) quotes B) curly brackets C) parentheses D) square brackets"],
+   correctAnswer: "C) parentheses"
+},
+{ question: "Arrays in JavaScript can be used to store ___.",
+   answers: ["A) numbers and strings B) other arrays C) booleans D) all of the above"],
+   correctAnswer: "D) all of the above"
+},
+{ question: "String values must be enclosed within which of the following when being assigned to variables, or var?",
+   answers: ["A) commas B) curly brackets C) quotes D) parentheses"],
+   correctAnswer: "C) quotes"
+},
+{ question: "Which of the following is useful during development of applications when debugging, and printing content to the debugger??",
+   answers: ["A) JavaScript B) terminal/bash C) for loops D) console.log"],
+   correctAnswer: "D) console.log"
+},
+{ question: "What does DOM stand for?",
+  answers: ["A) Document Obscure Models B) Declaration Object Model C) Document Object Model D) None of the above"],
+  correctAnswer: "C) Document Object Model"
+},
+{ question: "When traversing the DOM, what is the correct document. input when trying to access an element by its ID and log it to the console?",
+  correctAnswer: "var firstChildUl = document.getElementById"
+},
+{ question: "Input the correct method to traverse the DOM when accessing the first child of an unordered list.",
+  correctAnswer: "var firstChild = document.querySelector"
+},
+{ question: "Input the two functions used to get and set items in local storage.",
+correctAnswer: "getItem, setItem"
+},
+{ question: "What is the correct method to listen for an event, whether it be a key press or click of a mouse or trackpad?",
+ correctAnswer: "document.addEventListener"
+},
+  ];
 
 function startTimer() {
   var timerInterval = setInterval(function() {
@@ -19,30 +59,44 @@ function startTimer() {
 
     if (secondsLeft === 0) {
       clearInterval(timerInterval);
-      // Call a function to handle the end of the game
+      
       endGame();
     }
   }, 1000);
 }
 
 function startQuiz() {
-  startButton.classList.add("hide");
-  questionContainerEl.classList.remove("hide");
-  timerId = setInterval(clockTick, 1000);
+    
+    startTimer();
+   
+    displayQuestion();
+  }
 
-  // Display the first question
-  getQuestion();
-}
+  var timeLeft = 120; 
 
-// Function to get the current question from the array
+  function startTimer() {
+    var timerInterval = setInterval(function() {
+      timeLeft--;
+      
+      console.log("Time left: " + timeLeft);
+      
+      if (timeLeft === 0) {
+        clearInterval(timerInterval);
+        console.log("Time's up!");
+       
+        displayScore();
+      }
+    }, 1000);
+  }
+
 function getQuestion() {
   var currentQuestion = questions[currentQuestionIndex];
   questionEl.textContent = currentQuestion.question;
 
-  // Clear any existing choices
+  
   choicesEl.innerHTML = "";
 
-  // Create a button for each choice
+  
   currentQuestion.choices.forEach(function (choice, i) {
     var choiceButton = document.createElement("button");
     choiceButton.setAttribute("class", "choice");
@@ -50,14 +104,31 @@ function getQuestion() {
 
     choiceButton.textContent = i + 1 + ". " + choice;
 
-    // Add event listener for when the user selects a choice
+    
     choiceButton.onclick = questionClick;
 
     choicesEl.appendChild(choiceButton);
   });
 }
+function handleAnswer(answer) {
+    if (answer === quizQuestions[currentQuestionIndex].correctAnswer) {
+      score++;
+      console.log("Correct!");
+    } else {
+      console.log("Wrong!");
+    }
+    
+    currentQuestionIndex++;
+    
+    if (currentQuestionIndex === quizQuestions.length) {
+      
+      displayScore();
+    } else {
+      
+      displayQuestion();
+    }
+  }
 
-// Function to check if the user's answer is correct
 function questionClick() {
   if (this.value !== questions[currentQuestionIndex].answer) {
     time -= 10;
@@ -66,23 +137,23 @@ function questionClick() {
       time = 0;
     }
 
-    // Display "Wrong!" feedback
+    
     feedbackEl.textContent = "Wrong!";
   } else {
-    // Display "Correct!" feedback
+    
     feedbackEl.textContent = "Correct!";
   }
 
-  // Display the feedback for a short duration
+  
   feedbackEl.setAttribute("class", "feedback");
   setTimeout(function () {
     feedbackEl.setAttribute("class", "feedback hide");
   }, 1000);
 
-  // Move to the next question
+  
   currentQuestionIndex++;
 
-  // Check if there are more questions or if the time has run out
+  
   if (currentQuestionIndex === questions.length || time === 0) {
     endQuiz();
   } else {
@@ -90,23 +161,29 @@ function questionClick() {
   }
 }
 
-// Function to end the quiz
+
 function endQuiz() {
   clearInterval(timerId);
 
-  // Display the end screen
+  
   var endScreenEl = document.getElementById("end-screen");
   endScreenEl.classList.remove("hide");
 
-  // Display the final score
+  
   var finalScoreEl = document.getElementById("final-score");
   finalScoreEl.textContent = time;
 
-  // Hide the question container
+ 
   questionContainerEl.classList.add("hide");
 }
 
-// Function to update the timer
+function displayScore() {
+    console.log("Your score: " + score + " out of " + quizQuestions.length);
+    if (score === quizQuestions.length) {
+      console.log("You got a new high score!");
+    }
+  }
+
 function clockTick() {
   time--;
   timerEl.textContent = time;
@@ -116,5 +193,5 @@ function clockTick() {
   }
 }
 
-// Event listener to start the quiz when the start button is clicked
+
 startButton.onclick = startQuiz;
