@@ -14,8 +14,9 @@
 
     <main>
         <section id="quiz">
-            <h2>Coding Quiz Challenge</h2>
-            <div id="question-container">
+            <h2>Quiz Questions</h2>
+            <button id="start">Start Quiz</button>
+            <section id="question-container">
                 <p id="question-text">Question goes here</p>
                 <ul id="choices-list">
                     <li><button class="choice">Choice 1</button></li>
@@ -23,22 +24,21 @@
                     <li><button class="choice">Choice 3</button></li>
                     <li><button class="choice">Choice 4</button></li>
                 </ul>
-            </div>
+            </section>
             <button id="submit-button">Submit</button>
         </section>
 
         <section id="results" class="hidden">
             <h2>Quiz Results</h2>
-            <p id="score-text">Your score: <span id="score">0</span></p>
+            <p id="score-text">Your score: <aside id="final-score">0</aside></p>
             <button id="restart-button">Restart Quiz</button>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2021 Your Company. All rights reserved.</p>
+        <p>Thank you for using our quiz! Best of luck on your coding journey.</p>
     </footer>
 
     <script src="script.js"></script>
 </body>
-</html>
 </html>
