@@ -4,6 +4,41 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="Description" content="Test your coding knowledge!" />
-<title>Use This Quiz to Test Your Coding Knowledge!</title>
+        <link rel="stylesheet" type="text/css" href="style.css">
+<title>Use This Coding Quiz to Test Your Coding Knowledge!</title>
 </head>
+<body>
+    <header>
+        <h1>Coding Quiz</h1>
+    </header>
+
+    <main>
+        <section id="quiz">
+            <h2>Coding Quiz Challenge</h2>
+            <div id="question-container">
+                <p id="question-text">Question goes here</p>
+                <ul id="choices-list">
+                    <li><button class="choice">Choice 1</button></li>
+                    <li><button class="choice">Choice 2</button></li>
+                    <li><button class="choice">Choice 3</button></li>
+                    <li><button class="choice">Choice 4</button></li>
+                </ul>
+            </div>
+            <button id="submit-button">Submit</button>
+        </section>
+
+        <section id="results" class="hidden">
+            <h2>Quiz Results</h2>
+            <p id="score-text">Your score: <span id="score">0</span></p>
+            <button id="restart-button">Restart Quiz</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2021 Your Company. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
 </html>

@@ -1,6 +1,6 @@
 
 var currentQuestionIndex = 0;
-var time = questions.length * 15;
+var time = questionEl.length * 15;
 var timerId;
 var score = 0;
 var currentQuestionIndex = 0;
