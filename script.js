@@ -1,35 +1,33 @@
 document.addEventListener("DOMContentLoaded", function() {
-var currentQuestionIndex = 0;
-var time = 120;
-var timervalueEl = document.getElementById("timer-value");
-var timerId;
-var score = 0;
+  var currentQuestionIndex = 0;
+  var time = 120;
+  var timervalueEl = document.getElementById("timer-value");
+  var timerId;
+  var score = 0;
 
+  var startButton = document.getElementById("start");
+  var restartButton = document.getElementById("restart-button");
 
-var startButton = document.getElementById("start");
-var restartButton = document.getElementById("restart-button");
-
-function restartQuiz() {
+  function restartQuiz() {
     currentQuestionIndex = 0;
     score = 0;
     questionContainerEl.classList.remove("hide");
     resultsSection.classList.add("hidden");
     startQuiz();
   }
-  
+
   restartButton.addEventListener('click', restartQuiz);
+  restartButton.onclick = restartQuiz;
 
-restartButton.onclick = restartQuiz;
-
-var submitBtn = document.getElementById("submit-button");
-var questionContainerEl = document.getElementById("question-container");
-var questionEl = document.getElementById("question-text");
-var choicesEl = document.getElementById("choices-list");
-var feedbackEl = document.getElementById("feedback");
-var finalScoreEl = document.getElementById("final-score");
-var quizSection = document.getElementById("quiz");
-var resultsSection = document.getElementById("results");
-var questions = [
+  var submitBtn = document.getElementById("submit-button");
+  var questionContainerEl = document.getElementById("question-container");
+  var questionEl = document.getElementById("question-text");
+  var choicesEl = document.getElementById("choices-list");
+  var feedbackEl = document.getElementById("feedback");
+  var finalScoreEl = document.getElementById("final-score");
+  var quizSection = document.getElementById("quiz");
+  var resultsSection = document.getElementById("results");
+  var questions = [
     {
       question: "In JavaScript, commonly used data types include all but the following:",
       answers: ["A) strings", "B) booleans", "C) alerts", "D) numbers"],
@@ -96,36 +94,25 @@ correctAnswer: "getItem, setItem"
     var secondsLeft = 180;
     currentQuestionIndex = 0;
     score = 0;
-      startTimer();
-
+    startTimer();
     showQuestion();
     startButton.disabled = true;
-
-    function startTimer() {
-      var timerInterval = setInterval(function() {
-        secondsLeft--;
-        timervalueEl.textContent = secondsLeft;
-        quizTimerEl.textContent =time;
-        console.log("Time left: " + secondsLeft);
-        
-        if (secondsLeft <= 0) {
-          clearInterval(timerInterval);
-          console.log("Time's up!");
-         
-         endQuiz();
-        }
-      }, 1000);
-    }
   }
-  
+
+  function startTimer() {
+    timerId = setInterval(function() {
+      secondsLeft--;
+      timervalueEl.textContent = secondsLeft;
+      if (secondsLeft <= 0) {
+        clearInterval(timerId);
+        endQuiz();
+      }
+    }, 1000);
+  }
+
   function questionClick() {
     var selectedAnswer = this.value;
-    if (selectedAnswer === questions[currentQuestionIndex].correctAnswer) {
-      score++;
-      console.log("Correct!");
-    } else {
-      console.log("Wrong!");
-    }
+    handleAnswer(selectedAnswer);
     currentQuestionIndex++;
     if (currentQuestionIndex < questions.length) {
       showQuestion();
@@ -133,133 +120,43 @@ correctAnswer: "getItem, setItem"
       endQuiz();
     }
   }
-  
-  function endQuiz() {
-    clearInterval(timerId);
-    resultsSection.classList.remove("hidden");
-    finalScoreEl.textContent = score;
-    {
-    console.log("Your score: " + score + " out of " + questions.length);
-    if (score === questions.length) {
-      console.log("You got a new high score!");
-    }
-  }
-  }
-  
-  startButton.onclick = startQuiz;
 
-function getQuestion() {
-  var currentQuestion = questions[currentQuestionIndex];
-  questionEl.textContent = currentQuestion.question;
-
-  
-  choicesEl.innerHTML = "";
-
-  
-  currentQuestion.choices.forEach(function (choice, i) {
-    var choiceButton = document.createElement("button");
-    choiceButton.setAttribute("class", "choice");
-    choiceButton.setAttribute("value", choice);
-
-    choiceButton.textContent = i + 1 + ". " + choice;
-
-    
-    choiceButton.onclick = questionClick;
-
-    choicesEl.appendChild(choiceButton);
-  });
-}
-function handleAnswer(answer) {
+  function handleAnswer(answer) {
     if (answer === questions[currentQuestionIndex].correctAnswer) {
       score++;
-      console.log("Correct!");
+      feedbackEl.textContent = "Correct!";
+      feedbackEl.setAttribute("class", "feedback correct");
     } else {
-      console.log("Wrong!");
+      feedbackEl.textContent = "Incorrect!";
+      feedbackEl.setAttribute("class", "feedback incorrect");
+      secondsLeft -= 10;
     }
-  
-    if (currentQuestionIndex === questions.length) {
-      displayScore();
-    } else {
-      displayQuestion();
-    }
-  }
-  
-
-
-function showNextQuestion() {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-      showQuestion();
-    } else {
-      endQuiz();
-    }
-  }
-
-    feedbackEl.setAttribute("class", "feedback");
     setTimeout(function() {
       feedbackEl.setAttribute("class", "feedback hide");
     }, 1000);
-  
-    currentQuestionIndex++;
-  
-    if (currentQuestionIndex === questions.length || time === 0) {
-      endQuiz();
-    } else {
-      getQuestion();
-    }
-  
-  
+  }
+
   function endQuiz() {
     clearInterval(timerId);
-    var endScreenEl = document.getElementById("end-screen");
-    endScreenEl.classList.remove("hide");
-    var finalScoreEl = document.getElementById("final-score");
+    resultsSection.classList.remove("hidden");
+    quizSection.style.display = "none";
     finalScoreEl.textContent = score;
+    var initialsInput = document.createElement("input");
+    initialsInput.setAttribute("type", "text");
+    initialsInput.setAttribute("placeholder", "Enter your initials");
+    var submitInitialsBtn = document.createElement("button");
+    submitInitialsBtn.textContent = "Submit";
+    submitInitialsBtn.onclick = function() {
+      var initials = initialsInput.value;
+      if (initials) {
+        localStorage.setItem("initialsAndScore", initials + " - " + score);
+      }
+      var endScreenEl = document.getElementById("end-screen");
+      endScreenEl.classList.remove("hide");
+    };
+    feedbackEl.parentNode.insertBefore(initialsInput, feedbackEl.nextSibling);
+    feedbackEl.parentNode.insertBefore(submitInitialsBtn, feedbackEl.nextSibling);
   }
-  
-  function displayScore() {
-    console.log("Your score: " + score + " out of " + questions.length);
-    if (score === questions.length) {
-      console.log("You got a new high score!");
-    }
-  }
 
-function submitQuiz() {
-    
-    var selectedAnswer = document.querySelector('input[name="choice"]:checked').value;
-  
-    
-    if (selectedAnswer === questions[currentQuestionIndex].answer) {
-      
-      score++;
-    }
-  
-    
-    localStorage.setItem('quizResponse', JSON.stringify({
-      question: questions[currentQuestionIndex].question,
-      selectedAnswer: selectedAnswer,
-      correctAnswer: questions[currentQuestionIndex].correctAnswer
-    }));
-  
-    
-    currentQuestionIndex++;
-    if (currentQuestionIndex < questions.length) {
-      showQuestion();
-    } else {
-      endQuiz();
-    }
-  }
-  function endQuiz() {finalScoreEl.textContent = `Your score: ${score}`;
-
- 
-  quizSection.style.display = 'none';
-
-  
-  resultsSection.style.display = 'block';
-
-  
-  localStorage.setItem('finalScore', score);
-}
-submitBtn.addEventListener('click', submitQuiz);
-startButton.onclick = startQuiz;
+  startButton.onclick = startQuiz;
 });
