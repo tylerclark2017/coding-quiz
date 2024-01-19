@@ -4,7 +4,7 @@ var time = 120;
 var timervalueEl = document.getElementById("timer-value");
 var timerId;
 var score = 0;
-var quizTimerEl = document.querySelector(".quiz-time")
+
 
 var startButton = document.getElementById("start");
 var restartButton = document.getElementById("restart-button");
@@ -26,7 +26,6 @@ var questionContainerEl = document.getElementById("question-container");
 var questionEl = document.getElementById("question-text");
 var choicesEl = document.getElementById("choices-list");
 var feedbackEl = document.getElementById("feedback");
-var secondsLeft = 120;
 var finalScoreEl = document.getElementById("final-score");
 var quizSection = document.getElementById("quiz");
 var resultsSection = document.getElementById("results");
@@ -93,28 +92,30 @@ correctAnswer: "getItem, setItem"
     });
   }
 
-  function startTimer() {
-    var timerInterval = setInterval(function() {
-      secondsLeft--;
-      timervalueEl.textContent = secondsLeft;
-      console.log("Time left: " + secondsLeft);
-      
-      if (secondsLeft <= 0) {
-        clearInterval(timerInterval);
-        console.log("Time's up!");
-       
-       endQuiz();
-      }
-    }, 1000);
-  }
-
   function startQuiz() {
+    var secondsLeft = 180;
     currentQuestionIndex = 0;
     score = 0;
       startTimer();
 
     showQuestion();
     startButton.disabled = true;
+
+    function startTimer() {
+      var timerInterval = setInterval(function() {
+        secondsLeft--;
+        timervalueEl.textContent = secondsLeft;
+        quizTimerEl.textContent =time;
+        console.log("Time left: " + secondsLeft);
+        
+        if (secondsLeft <= 0) {
+          clearInterval(timerInterval);
+          console.log("Time's up!");
+         
+         endQuiz();
+        }
+      }, 1000);
+    }
   }
   
   function questionClick() {
